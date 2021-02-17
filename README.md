@@ -3,3 +3,4 @@
 General information, notes, build instructions, as well as basic terraform 
 operations via this provider will be provided here. 
 
+Provider Codebase GoLang-Namespace: github.com/truemark/terraform-provider-confluent-cloud 
