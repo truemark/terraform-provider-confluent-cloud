@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -12,18 +13,43 @@ import (
 //    - Kafka Topics
 //
 func Provider() *schema.Provider {
-	Println("Into Provider()")
+	fmt.Println("Into Provider()")
 
 	p := &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"environment": {
-				Type:        schema.TypeBool,
+				Type:        schema.TypeList,
+				MaxItems:    1,
 				Optional:    true,
-				Description: "Debug indicates whether or not Helm is running in Debug mode.",
-				DefaultFunc: schema.EnvDefaultFunc("HELM_DEBUG", false),
+				Description: "Confluent.io Environment Configuration.",
+				Elem:        resourceEnvironment(),
+			},
+			"kafka-cluster": {
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
+				Description: "Confluent.io Kafka-Clusters Configuration.",
+				Elem:        resourceKafkaCluster(),
+			},
+			"kafka-acl": {
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
+				Description: "Confluent.io Kafka-ACLs Configuration.",
+				Elem:        resourceKafkaACL(),
+			},
+			"kafka-topic": {
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
+				Description: "Confluent.io Kafa-Topics Configuration.",
+				Elem:        resourceKafkaTopic(),
 			}
 		}
 	}
+
+	fmt.Println("Returning from Provider()")
+
 	return p
 }
 
@@ -47,7 +73,9 @@ func Provider() *schema.Provider {
 //      -v, --verbose count   Increase verbosity (-v for warn, -vv for info, -vvv for debug, -vvvv for trace).
 //
 //    Use "ccloud environment [command] --help" for more information about a command.
-func resourceEnvironment() {
+func resourceEnvironment() *schema.Provider {
+	fmt.Println("Into resourceEnvironment()")
+
 	p := &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"create": {
@@ -66,4 +94,88 @@ func resourceEnvironment() {
 
 			},
 		}
+	}
+	return p
+}
+
+// //
+// Manage Kafka clusters.
+//
+// Usage:
+//   ccloud kafka cluster [command]
+//
+// Available Commands:
+//   create      Create a Kafka cluster.
+//   delete      Delete a Kafka cluster.
+//   describe    Describe a Kafka cluster.
+//   list        List Kafka clusters.
+//   update      Update a Kafka cluster.
+//   use         Make the Kafka cluster active for use in other commands.
+//
+// Global Flags:
+//   -h, --help            Show help for this command.
+//   -v, --verbose count   Increase verbosity (-v for warn, -vv for info, -vvv for debug, -vvvv for trace).
+//
+// Use "ccloud kafka cluster [command] --help" for more information about a command.
+func resourceKafkaCluster() *schema.Provider {
+	fmt.Println("Into resourceKafkaCluster()")
+
+	p := &schema.Provider{
+		Schema: map[string]*schema.Schema{}
+	}
+	return p
+}
+
+////
+// Manage Kafka ACLs.
+//
+// Usage:
+//   ccloud kafka acl [command]
+//
+// Available Commands:
+//   create      Create a Kafka ACL.
+//   delete      Delete a Kafka ACL.
+//   list        List Kafka ACLs for a resource.
+//
+// Global Flags:
+//   -h, --help            Show help for this command.
+//   -v, --verbose count   Increase verbosity (-v for warn, -vv for info, -vvv for debug, -vvvv for trace).
+//
+// Use "ccloud kafka acl [command] --help" for more information about a command.
+func resourceKafkaACL() *schema.Provider {
+	fmt.Println("Into resourceKafkaAcl()")
+
+	p := &schema.Provider{
+		Schema: map[string]*schema.Schema{}
+	}
+	return p
+}
+
+///
+// Manage Kafka topics.
+//
+// Usage:
+//   ccloud kafka topic [command]
+//
+// Available Commands:
+//   consume     Consume messages from a Kafka topic.
+//   create      Create a Kafka topic.
+//   delete      Delete a Kafka topic.
+//   describe    Describe a Kafka topic.
+//   list        List Kafka topics.
+//   produce     Produce messages to a Kafka topic.
+//   update      Update a Kafka topic.
+//
+// Global Flags:
+//   -h, --help            Show help for this command.
+//   -v, --verbose count   Increase verbosity (-v for warn, -vv for info, -vvv for debug, -vvvv for trace).
+//
+// Use "ccloud kafka topic [command] --help" for more information about a command.
+func resourceKafkaTopic() *schema.Provider {
+	fmt.Println("Into resourceKafkaTopic()")
+
+	p := &schema.Provider{
+		Schema: map[string]*schema.Schema{}
+	}
+	return p
 }
