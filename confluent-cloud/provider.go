@@ -121,7 +121,26 @@ func resourceKafkaCluster() *schema.Provider {
 	fmt.Println("Into resourceKafkaCluster()")
 
 	p := &schema.Provider{
-		Schema: map[string]*schema.Schema{}
+		Schema: map[string]*schema.Schema{
+			"create": {
+
+			},
+			"delete": {
+
+			},
+			"describe": {
+
+			},
+			"list": {
+
+			},
+			"update": {
+
+			},
+			"use": {
+
+			},
+		}
 	}
 	return p
 }
@@ -146,7 +165,17 @@ func resourceKafkaACL() *schema.Provider {
 	fmt.Println("Into resourceKafkaAcl()")
 
 	p := &schema.Provider{
-		Schema: map[string]*schema.Schema{}
+		Schema: map[string]*schema.Schema{
+			"create": {
+
+			},
+			"delete": {
+
+			},
+			"list": {
+
+			},
+		}
 	}
 	return p
 }
@@ -175,7 +204,29 @@ func resourceKafkaTopic() *schema.Provider {
 	fmt.Println("Into resourceKafkaTopic()")
 
 	p := &schema.Provider{
-		Schema: map[string]*schema.Schema{}
+		Schema: map[string]*schema.Schema{
+			"consume": {
+
+			},
+			"create": {
+
+			},
+			"delete": {
+
+			},
+			"describe": {
+
+			},
+			"list": {
+
+			},
+			"produce": {
+
+			},
+			"update": {
+
+			},
+		}
 	}
 	return p
 }
