@@ -14,5 +14,3 @@ provider "confluent_cloud" {
 resource "confluent_cloud_environment" "mything" {
    name = "myenv"
 }
-
-# Test commit issue...
