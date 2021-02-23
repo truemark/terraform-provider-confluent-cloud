@@ -140,12 +140,12 @@
 
 # On AIX, when linking a C program that uses a Go archive built with
 # -buildmode=c-archive, you must pass -Wl,-bnoobjreorder to the C compiler.
-mkdir build
-go build -a -v -work -x -o ./build -mod mod .
 
+source ./bin/setup_envvars.sh
 
+OPTS="$VERBOSE $INSTALL_DEPS $REBUILD $MOD"
 
+rm -rf ./$BUILD_DIR
+mkdir ./$BUILD_DIR
 
-
-
-
+sudo go build $OPTS -o ./$BUILD_DIR/$PROVIDER_PROD_NAME  ./...

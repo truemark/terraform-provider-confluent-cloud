@@ -49,6 +49,7 @@
 # For more about build flags, see 'go help build'.
 #
 # For more about specifying packages, see 'go help packages'.
-sudo rm -rf ./build
-sudo go clean -cache -x -r -modcache
-sudo go clean -i -x -r
+source ./bin/setup_envvars.sh
+
+sudo go clean $CLEAN_OPTS
+sudo rm -rf $BUILD_DIR
