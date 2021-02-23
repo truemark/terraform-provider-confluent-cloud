@@ -32,13 +32,14 @@ func environmentCreate(ctx context.Context, d *schema.ResourceData, meta interfa
 	c := meta.(*clientapi.Client)
 
 	name := d.Get("name").(string)
-	orgID, _ := getOrganizationID(c)
-
-	email, password := "briancabbott@gmail.com", "Blu3Bl00p8480!"
-
-	cl := clientapi.NewClient(email, password)
-	env, _ := cl.CreateEnvironment(name, orgID)
-
+	orgID, err := getOrganizationID(c)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	env, err := c.CreateEnvironment(name, orgID)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	d.SetId(env.ID)
 
 	return nil

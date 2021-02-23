@@ -105,9 +105,9 @@ func Provider() *schema.Provider {
 func ResourceEnvironment() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: environmentCreate,
-		// ReadContext:   environmentRead,
-		// UpdateContext: environmentUpdate,
-		// DeleteContext: environmentDelete,
+		ReadContext:   environmentRead,
+		UpdateContext: environmentUpdate,
+		DeleteContext: environmentDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -128,14 +128,18 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	username := d.Get("username").(string)
 	password := d.Get("password").(string)
 
+	log.Printf("Username: %s\n", username)
+	log.Printf("Password: %s\n", password)
+
 	var diags diag.Diagnostics
 	c := client.NewClient(username, password)
-
 	loginErr := c.Login()
 	if loginErr == nil {
+		log.Printf("[INFO] Login to Confluent.Cloud Succeeded\n")
 		return c, diags
 	}
 
+	log.Printf("[INFO] Loging Error Occurred: %s\n", loginErr.Error())
 	err := resource.RetryContext(ctx, 30*time.Minute, func() *resource.RetryError {
 		err := c.Login()
 		if strings.Contains(err.Error(), "Exceeded rate limit") {

@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"log"
 	"net/url"
 )
 
@@ -69,7 +70,10 @@ func (c *Client) CreateEnvironment(name string, organizationID int) (*Environmen
 		Post(u.String())
 
 	if err != nil {
+		log.Printf("Error occurred creating environment. Error was: %s\n", err.Error())
 		return nil, err
+	} else {
+		log.Printf("New Environment Successfully created. Environment is: %s\n", name)
 	}
 
 	if response.IsError() {
