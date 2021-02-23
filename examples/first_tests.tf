@@ -8,9 +8,11 @@
 #
 terraform {
   required_providers {
-    truemark_confluent_cloud  = {
-      source  = "truemark/confluent-cloud"
-      version = "0.0.001"
+    terraform-provider-truemark-confluent-cloud = {
+      source  = "truemark/truemark-confluent-cloud/
+      terraform-provider-truemark-confluent-cloud
+"
+      version = "1.0.0"
     }
   }
 }

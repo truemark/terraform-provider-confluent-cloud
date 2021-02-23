@@ -1,14 +1,23 @@
-.PHONY: build format lint doc validate-openapi
+.PHONY: build clean install go-format go-lint go-doc tf-doc
 
 build:
-	go build
+	./bin/build.sh
 
-format:
+clean:
+	./bin/clean.sh
+
+install:
+	./bin/install.sh
+
+
+go-format:
 	go fmt ./...
 
-lint:
+go-lint:
 
-doc:
 
-validate-openapi:
-	openapi-generator validate --input-spec ./openapi.yml --recommend
+go-doc:
+
+
+tf-doc:
+

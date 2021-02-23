@@ -2,7 +2,11 @@ source ./bin/setup_envvars.sh
 
 echo "TF_INSTALL_DIR: " "$TF_INSTALL_DIR"
 echo "BUILD_OUTPUT: " "$BUILD_OUTPUT"
-mkdir -p -m +rw "$TF_INSTALL_DIR"
+
+
+OUT=$(mkdir -p $TF_INSTALL_DIR)
+echo $OUT
+
 cp ./"$BUILD_OUTPUT" "$TF_INSTALL_DIR"
 
 echo ""

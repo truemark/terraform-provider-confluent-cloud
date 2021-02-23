@@ -1,5 +1,4 @@
 module github.com/truemark/terraform-provider-confluent-cloud/confluent_cloud/client
-
 go 1.15
 
 require (

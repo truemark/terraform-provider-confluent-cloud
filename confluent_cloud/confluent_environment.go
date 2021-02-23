@@ -2,11 +2,10 @@ package confluent_cloud
 
 import (
 	"context"
-	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"log"
-
+	clientapi "github.com/truemark/terraform-provider-confluent-cloud/confluent_cloud/client"
 )
 
 ////
@@ -28,44 +27,40 @@ import (
 //      -v, --verbose count   Increase verbosity (-v for warn, -vv for info, -vvv for debug, -vvvv for trace).
 //
 //    Use "ccloud environment [command] --help" for more information about a command.
-func ResourceEnvironment() *schema.Resource {
-	fmt.Println("Into resourceEnvironment()")
-
-	return &schema.Resource{
-		CreateContext: environmentCreate,
-		ReadContext:   environmentRead,
-		UpdateContext: environmentUpdate,
-		DeleteContext: environmentDelete,
-		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
-		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    false,
-				Description: "The name of the environment",
-			},
-		},
-	}
-}
 
 func environmentCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	log.Println("environmentCreate()")
+	c := meta.(*clientapi.Client)
+
+	name := d.Get("name").(string)
+	orgID, _ := getOrganizationID(c)
+
+	email, password := "briancabbott@gmail.com", "Blu3Bl00p8480!"
+
+	cl := clientapi.NewClient(email, password)
+	env, _ := cl.CreateEnvironment(name, orgID)
+
+	d.SetId(env.ID)
+
 	return nil
 }
 
 func environmentUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	log.Println("environmentUpdate()")
 	return nil
 }
 
 func environmentRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	log.Println("environmentRead()")
 	return nil
 }
 
 func environmentDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	log.Println("environmentDelete()")
 	return nil
+}
+
+func getOrganizationID(clientapi *clientapi.Client) (int, error) {
+	userData, err := clientapi.Me()
+	if err != nil {
+		return 0, err
+	}
+
+	return userData.Account.OrganizationID, nil
 }

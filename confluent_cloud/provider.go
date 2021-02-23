@@ -1,9 +1,16 @@
 package confluent_cloud
 
 import (
-	"fmt"
+	"context"
+	"log"
+	"strings"
+	"time"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
+	"github.com/truemark/terraform-provider-confluent-cloud/confluent_cloud/client"
 )
 
 // A TerraForm Provider that supportsthe following operations:
@@ -66,177 +73,80 @@ import (
 //}
 
 func Provider() *schema.Provider {
-	fmt.Println("Into Provider()")
+	// fmt.Println("Into Provider()")
 
-	p := &schema.Provider{
+	log.Printf("[INFO] Creating Provider")
+	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			"environment": {
-				Type:        schema.TypeList,
-				MaxItems:    1,
+			"username": {
+				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "Confluent.io Environment Configuration.",
-				Elem:        resourceEnvironment(),
+				DefaultFunc: schema.EnvDefaultFunc("CONFLUENT_CLOUD_USERNAME", ""),
 			},
-			"kafka-cluster": {
-				Type:        schema.TypeList,
-				MaxItems:    1,
+			"password": {
+				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "Confluent.io Kafka-Clusters Configuration.",
-				Elem:        resourceKafkaCluster(),
-			},
-			"kafka-acl": {
-				Type:        schema.TypeList,
-				MaxItems:    1,
-				Optional:    true,
-				Description: "Confluent.io Kafka-ACLs Configuration.",
-				Elem:        resourceKafkaACL(),
-			},
-			"kafka-topic": {
-				Type:        schema.TypeList,
-				MaxItems:    1,
-				Optional:    true,
-				Description: "Confluent.io Kafa-Topics Configuration.",
-				Elem:        resourceKafkaTopic(),
+				Sensitive:   true,
+				DefaultFunc: schema.EnvDefaultFunc("CONFLUENT_CLOUD_PASSWORD", ""),
 			},
 		},
-	}
-
-	fmt.Println("Returning from Provider()")
-
-	return p
-}
-
-////
-// Supports Confluence Cloud Environment Operations. Text from 'ccloud environment' is as follows:
-//    Manage and select ccloud environments.
-//
-//    Usage:
-//      ccloud environment [command]
-//
-//    Available Commands:
-//      create      Create a new Confluent Cloud environment.
-//      delete      Delete a Confluent Cloud environment and all its resources.
-//      list        List Confluent Cloud environments.
-//      update      Update an existing Confluent Cloud environment.
-//      use         Switch to the specified Confluent Cloud environment.
-//
-//    Global Flags:
-//      -h, --help            Show help for this command.
-//      -v, --verbose count   Increase verbosity (-v for warn, -vv for info, -vvv for debug, -vvvv for trace).
-//
-//    Use "ccloud environment [command] --help" for more information about a command.
-func resourceEnvironment() *schema.Provider {
-	fmt.Println("Into resourceEnvironment()")
-
-	p := &schema.Provider{
-		Schema: map[string]*schema.Schema{
-			"create": {},
-			"delete": {},
-			"list":   {},
-			"update": {},
-			"use":    {},
+		ConfigureContextFunc: providerConfigure,
+		ResourcesMap: map[string]*schema.Resource{
+			"truemark-confluent-cloud_environment_create": ResourceEnvironment(),
+			// 	"confluentcloud_kafka_cluster":   kafkaClusterResource(),
+			// 	"confluentcloud_api_key":         apiKeyResource(),
+			// 	"confluentcloud_environment":     environmentResource(),
+			// 	"confluentcloud_schema_registry": schemaRegistryResource(),
+			// 	"confluentcloud_service_account": serviceAccountResource(),
 		},
 	}
-	return p
 }
 
-// //
-// Manage Kafka clusters.
-//
-// Usage:
-//   ccloud kafka cluster [command]
-//
-// Available Commands:
-//   create      Create a Kafka cluster.
-//   delete      Delete a Kafka cluster.
-//   describe    Describe a Kafka cluster.
-//   list        List Kafka clusters.
-//   update      Update a Kafka cluster.
-//   use         Make the Kafka cluster active for use in other commands.
-//
-// Global Flags:
-//   -h, --help            Show help for this command.
-//   -v, --verbose count   Increase verbosity (-v for warn, -vv for info, -vvv for debug, -vvvv for trace).
-//
-// Use "ccloud kafka cluster [command] --help" for more information about a command.
-func resourceKafkaCluster() *schema.Provider {
-	fmt.Println("Into resourceKafkaCluster()")
-
-	p := &schema.Provider{
+func ResourceEnvironment() *schema.Resource {
+	return &schema.Resource{
+		CreateContext: environmentCreate,
+		// ReadContext:   environmentRead,
+		// UpdateContext: environmentUpdate,
+		// DeleteContext: environmentDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
-			"create":   {},
-			"delete":   {},
-			"describe": {},
-			"list":     {},
-			"update":   {},
-			"use":      {},
+			"name": {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    false,
+				Description: "The name of the environment",
+			},
 		},
 	}
-	return p
 }
 
-////
-// Manage Kafka ACLs.
-//
-// Usage:
-//   ccloud kafka acl [command]
-//
-// Available Commands:
-//   create      Create a Kafka ACL.
-//   delete      Delete a Kafka ACL.
-//   list        List Kafka ACLs for a resource.
-//
-// Global Flags:
-//   -h, --help            Show help for this command.
-//   -v, --verbose count   Increase verbosity (-v for warn, -vv for info, -vvv for debug, -vvvv for trace).
-//
-// Use "ccloud kafka acl [command] --help" for more information about a command.
-func resourceKafkaACL() *schema.Provider {
-	fmt.Println("Into resourceKafkaAcl()")
+func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+	log.Printf("[INFO] Initializing ConfluentCloud client")
 
-	p := &schema.Provider{
-		Schema: map[string]*schema.Schema{
-			"create": {},
-			"delete": {},
-			"list":   {},
-		},
+	username := d.Get("username").(string)
+	password := d.Get("password").(string)
+
+	var diags diag.Diagnostics
+	c := client.NewClient(username, password)
+
+	loginErr := c.Login()
+	if loginErr == nil {
+		return c, diags
 	}
-	return p
-}
 
-///
-// Manage Kafka topics.
-//
-// Usage:
-//   ccloud kafka topic [command]
-//
-// Available Commands:
-//   consume     Consume messages from a Kafka topic.
-//   create      Create a Kafka topic.
-//   delete      Delete a Kafka topic.
-//   describe    Describe a Kafka topic.
-//   list        List Kafka topics.
-//   produce     Produce messages to a Kafka topic.
-//   update      Update a Kafka topic.
-//
-// Global Flags:
-//   -h, --help            Show help for this command.
-//   -v, --verbose count   Increase verbosity (-v for warn, -vv for info, -vvv for debug, -vvvv for trace).
-//
-// Use "ccloud kafka topic [command] --help" for more information about a command.
-func resourceKafkaTopic() *schema.Provider {
-	fmt.Println("Into resourceKafkaTopic()")
+	err := resource.RetryContext(ctx, 30*time.Minute, func() *resource.RetryError {
+		err := c.Login()
+		if strings.Contains(err.Error(), "Exceeded rate limit") {
+			log.Printf("[INFO] ConfluentCloud API rate limit exceeded, retrying.")
+			return resource.RetryableError(err)
+		} else {
+			log.Printf("[INFO] rate limit is still okay...\n")
+		}
 
-	p := &schema.Provider{
-		Schema: map[string]*schema.Schema{
-			"consume":  {},
-			"create":   {},
-			"delete":   {},
-			"describe": {},
-			"list":     {},
-			"produce":  {},
-			"update":   {},
-		},
-	}
-	return p
+		return resource.NonRetryableError(err)
+	})
+
+	return c, diag.FromErr(err)
 }
