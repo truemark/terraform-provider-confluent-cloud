@@ -2,10 +2,10 @@
 package main
 
 import (
-	confluentcloud "github.com/truemark/terraform-provider-confluent-cloud/confluent-cloud"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
+	"github.com/hashicorp/terraform-plugin-sdk/plugin"
+	provider "github.com/truemark/terraform-provider-confluent-cloud/confluent-cloud"
 )
 
 func main() {
-	plugin.Serve(&plugin.ServeOpts{ProviderFunc: confluentcloud.provider.Provider})
+	plugin.Serve(&plugin.ServeOpts{ProviderFunc: provider.Provider})
 }

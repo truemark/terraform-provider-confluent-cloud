@@ -3,6 +3,10 @@ package confluent_cloud
 import (
 	"context"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"log"
+
 )
 
 ////
@@ -24,8 +28,9 @@ import (
 //      -v, --verbose count   Increase verbosity (-v for warn, -vv for info, -vvv for debug, -vvvv for trace).
 //
 //    Use "ccloud environment [command] --help" for more information about a command.
-func resourceEnvironment() *schema.Resource {
+func ResourceEnvironment() *schema.Resource {
 	fmt.Println("Into resourceEnvironment()")
+
 	return &schema.Resource{
 		CreateContext: environmentCreate,
 		ReadContext:   environmentRead,
@@ -46,14 +51,21 @@ func resourceEnvironment() *schema.Resource {
 }
 
 func environmentCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	log.Println("environmentCreate()")
+	return nil
 }
 
 func environmentUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-
+	log.Println("environmentUpdate()")
+	return nil
 }
 
 func environmentRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	log.Println("environmentRead()")
+	return nil
 }
 
 func environmentDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	log.Println("environmentDelete()")
+	return nil
 }

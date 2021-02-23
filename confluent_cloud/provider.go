@@ -1,4 +1,4 @@
-package provider
+package confluent_cloud
 
 import (
 	"fmt"
@@ -44,8 +44,8 @@ func Provider() *schema.Provider {
 				Optional:    true,
 				Description: "Confluent.io Kafa-Topics Configuration.",
 				Elem:        resourceKafkaTopic(),
-			}
-		}
+			},
+		},
 	}
 
 	fmt.Println("Returning from Provider()")
@@ -93,7 +93,7 @@ func resourceEnvironment() *schema.Provider {
 			"use": {
 
 			},
-		}
+		},
 	}
 	return p
 }
@@ -140,7 +140,7 @@ func resourceKafkaCluster() *schema.Provider {
 			"use": {
 
 			},
-		}
+		},
 	}
 	return p
 }
@@ -175,7 +175,7 @@ func resourceKafkaACL() *schema.Provider {
 			"list": {
 
 			},
-		}
+		},
 	}
 	return p
 }
@@ -226,7 +226,7 @@ func resourceKafkaTopic() *schema.Provider {
 			"update": {
 
 			},
-		}
+		},
 	}
 	return p
 }
