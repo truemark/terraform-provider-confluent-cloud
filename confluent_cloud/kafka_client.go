@@ -1,7 +1,6 @@
 package confluent_cloud
 
-type KafkaConfig struct {}
-
+type KafkaConfig struct{}
 
 func createKafkaClient(config *KafkaConfig) {
 	// Create a new AdminClient.

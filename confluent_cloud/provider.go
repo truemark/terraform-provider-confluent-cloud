@@ -73,8 +73,6 @@ import (
 //}
 
 func Provider() *schema.Provider {
-	// fmt.Println("Into Provider()")
-
 	log.Printf("[INFO] Creating Provider")
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
@@ -95,7 +93,6 @@ func Provider() *schema.Provider {
 			"truemark-confluent-cloud_environment_create": ResourceEnvironment(),
 			// 	"confluentcloud_kafka_cluster":   kafkaClusterResource(),
 			// 	"confluentcloud_api_key":         apiKeyResource(),
-			// 	"confluentcloud_environment":     environmentResource(),
 			// 	"confluentcloud_schema_registry": schemaRegistryResource(),
 			// 	"confluentcloud_service_account": serviceAccountResource(),
 		},
