@@ -12,6 +12,6 @@ provider "truemark-confluent-cloud" {
   password = "Blu3Bl00p8480!"
 }
 
-resource "truemark-confluent-cloud_environment_create" "mything" {
-   name = "myenv"
+resource "truemark-confluent-cloud_environment" "mything" {
+   name = "myenv3"
 }

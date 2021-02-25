@@ -5,6 +5,6 @@ provider "truemark.io/terraform/truemark-confluent-cloud" {
   version     = "1.0.0"
   constraints = "1.0.0"
   hashes = [
-    "h1:mcnj4KR/n9ltpxBUlRbWkgL8GRBILSJHky4XExBMfH4=",
+    "h1:oZtFYcT0sFqdTORvW/eP0VvrLxiRMIqTYKitg0vc8i0=",
   ]
 }

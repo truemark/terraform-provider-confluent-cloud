@@ -8,6 +8,7 @@ replace (
 )
 
 require (
+	github.com/confluentinc/confluent-kafka-go v1.5.2 // indirect
 	// github.com/confluentinc/confluent-kafka-go v1.5.2 // indirect
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.4.3
 	github.com/truemark/terraform-provider-confluent-cloud/confluent_cloud v1.0.0

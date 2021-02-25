@@ -24,7 +24,7 @@ type ClusterCreateConfig struct {
 	NetworkEgress   int                           `json:"network_egress"`
 	Region          string                        `json:"region"`
 	ServiceProvider string                        `json:"serviceProvider"`
-	Durability      string                        `json:"durability"`
+	Availability    string                        `json:"availability"`
 	Deployment      ClusterCreateDeploymentConfig `json:"deployment"`
 	Cku             int                           `json:"cku"`
 }
@@ -109,18 +109,58 @@ func (c *Client) ListClusters(accountID string) ([]Cluster, error) {
 }
 
 func (c *Client) CreateCluster(request ClusterCreateConfig) (*Cluster, error) {
+
+	log.Println("into CreateCluster()")
+
 	rel, err := url.Parse("clusters")
 	if err != nil {
+		log.Printf("Error occured on url parse to clusters: %s\n", err)
 		return nil, err
 	}
+	log.Printf("rel was: %s\n", rel)
 
+	log.Println("calling (c.BaseURL.ResolveReference)")
 	u := c.BaseURL.ResolveReference(rel)
+	log.Printf("ResolveRef was: %s ===\n", u)
+	log.Printf("request: %s\n", request)
 
 	response, err := c.NewRequest().
 		SetBody(&ClusterCreateRequest{Config: request}).
 		SetResult(&ClusterResponse{}).
 		SetError(&ErrorResponse{}).
 		Post(u.String())
+
+	log.Printf("response from call to CreateCluster: \n")
+	log.Printf("%s\n", response)
+
+	// Explore response object
+	log.Println("Response Info:")
+	log.Println("  Error      :", err)
+	log.Println("  Status Code:", response.StatusCode())
+	log.Println("  Status     :", response.Status())
+	log.Println("  Proto      :", response.Proto())
+	log.Println("  Time       :", response.Time())
+	log.Println("  Received At:", response.ReceivedAt())
+	log.Println("  Body       :\n", response)
+	log.Println()
+
+	// Explore trace info
+	log.Println("Request Trace Info:")
+	ti := response.Request.TraceInfo()
+	log.Println("  DNSLookup     :", ti.DNSLookup)
+	log.Println("  ConnTime      :", ti.ConnTime)
+	log.Println("  TCPConnTime   :", ti.TCPConnTime)
+	log.Println("  TLSHandshake  :", ti.TLSHandshake)
+	log.Println("  ServerTime    :", ti.ServerTime)
+	log.Println("  ResponseTime  :", ti.ResponseTime)
+	log.Println("  TotalTime     :", ti.TotalTime)
+	log.Println("  IsConnReused  :", ti.IsConnReused)
+	log.Println("  IsConnWasIdle :", ti.IsConnWasIdle)
+	log.Println("  ConnIdleTime  :", ti.ConnIdleTime)
+	log.Println("  RequestAttempt:", ti.RequestAttempt)
+	log.Println("  RemoteAddr    :", ti.RemoteAddr.String())
+
+	// client.OnRequestLog()
 
 	if err != nil {
 		return nil, err
@@ -145,7 +185,7 @@ func (c *Client) DeleteCluster(id, account_id string) error {
 		SetBody(
 			map[string]interface{}{
 				"cluster": map[string]interface{}{
-					"id": id,
+					"id":        id,
 					"accountId": account_id,
 				},
 			},

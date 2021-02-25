@@ -10,25 +10,8 @@ import (
 )
 
 ////
-// Supports Confluence Cloud Environment Operations. Text from 'ccloud environment' is as follows:
-//    Manage and select ccloud environments.
+// Supports Confluence Cloud Environment Operations.
 //
-//    Usage:
-//      ccloud environment [command]
-//
-//    Available Commands:
-//      create      Create a new Confluent Cloud environment.
-//      delete      Delete a Confluent Cloud environment and all its resources.
-//      list        List Confluent Cloud environments.
-//      update      Update an existing Confluent Cloud environment.
-//      use         Switch to the specified Confluent Cloud environment.
-//
-//    Global Flags:
-//      -h, --help            Show help for this command.
-//      -v, --verbose count   Increase verbosity (-v for warn, -vv for info, -vvv for debug, -vvvv for trace).
-//
-//    Use "ccloud environment [command] --help" for more information about a command.
-
 func environmentCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(*clientapi.Client)
 	name := d.Get("name").(string)
@@ -48,6 +31,9 @@ func environmentCreate(ctx context.Context, d *schema.ResourceData, meta interfa
 	return nil
 }
 
+////
+// Updates the name of an existing Confluent.Cloud Environment
+//
 func environmentUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(*clientapi.Client)
 	newName := d.Get("name").(string)
@@ -67,6 +53,8 @@ func environmentUpdate(ctx context.Context, d *schema.ResourceData, meta interfa
 	return nil
 }
 
+///
+// Performs a read operation on the
 func environmentRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(*clientapi.Client)
 
