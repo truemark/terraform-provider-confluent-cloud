@@ -1,6 +1,7 @@
 package client
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/url"
@@ -124,8 +125,12 @@ func (c *Client) CreateCluster(request ClusterCreateConfig) (*Cluster, error) {
 	log.Printf("ResolveRef was: %s ===\n", u)
 	log.Printf("request: %s\n", request)
 
+	clusterReq, err := json.Marshal(&ClusterCreateRequest{Config: request})
+	if err != nil {
+		log.Printf("erorr occurred marshalling cluster-create-request to json: %s\n", err.Error())
+	}
 	response, err := c.NewRequest().
-		SetBody(&ClusterCreateRequest{Config: request}).
+		SetBody(clusterReq).
 		SetResult(&ClusterResponse{}).
 		SetError(&ErrorResponse{}).
 		Post(u.String())

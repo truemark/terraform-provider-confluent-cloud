@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"reflect"
 	"strings"
 	"time"
 
@@ -44,8 +43,8 @@ func kafkaClusterCreate(ctx context.Context, d *schema.ResourceData, meta interf
 	availability := d.Get("availability").(string)
 	cku := d.Get("cku").(int)
 
-	deployment := d.Get("deployment").(interface{})
-	log.Printf("dep type: %s\n", reflect.TypeOf(deployment))
+	// deployment := d.Get("deployment").(interface{})
+	// log.Printf("dep type: %s\n", reflect.TypeOf(deployment))
 
 	dep := clientapi.ClusterCreateDeploymentConfig{
 		AccountID: accountID,
