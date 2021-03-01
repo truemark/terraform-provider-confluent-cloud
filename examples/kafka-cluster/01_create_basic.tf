@@ -13,7 +13,7 @@ provider "truemark-confluent-cloud" {
 }
 
 resource "truemark-confluent-cloud_environment" "mything" {
-   name = "myenv17"
+   name = "myenv190"
 }
 
 resource "truemark-confluent-cloud_kafka_cluster" "test" {

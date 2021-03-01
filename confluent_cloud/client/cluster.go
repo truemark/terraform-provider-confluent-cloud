@@ -1,10 +1,12 @@
 package client
 
 import (
-	"encoding/json"
+	"bytes"
 	"fmt"
 	"log"
 	"net/url"
+	"os/exec"
+	"strings"
 	"time"
 )
 
@@ -125,15 +127,16 @@ func (c *Client) CreateCluster(request ClusterCreateConfig) (*Cluster, error) {
 	log.Printf("ResolveRef was: %s ===\n", u)
 	log.Printf("request: %s\n", request)
 
-	clusterReq, err := json.Marshal(&ClusterCreateRequest{Config: request})
+	bytes := []byte("{\"config\":{\"name\":\"kafka-cluster-test5\",\"accountId\":\"env-28r9y\",\"region\":\"us-west-2\",\"serviceProvider\":\"aws\",\"deployment\":{\"sku\":\"BASIC\"}}}")
+	// clusterReq, err := json.Marshal(&ClusterCreateRequest{Config: request})
 	if err != nil {
 		log.Printf("erorr occurred marshalling cluster-create-request to json: %s\n", err.Error())
 	}
 	response, err := c.NewRequest().
-		SetBody(clusterReq).
+		SetBody(bytes).
 		SetResult(&ClusterResponse{}).
 		SetError(&ErrorResponse{}).
-		Post(u.String())
+		Put(u.String())
 
 	log.Printf("response from call to CreateCluster: \n")
 	log.Printf("%s\n", response)
@@ -176,6 +179,42 @@ func (c *Client) CreateCluster(request ClusterCreateConfig) (*Cluster, error) {
 	}
 
 	return &response.Result().(*ClusterResponse).Cluster, nil
+}
+
+func CreateClusterCLI(request ClusterCreateConfig) (*Cluster, error) {
+	//  Name
+	// 	Flags:
+	//       --cloud string            Cloud provider ID (e.g. 'aws' or 'gcp').
+	//       --region string           Cloud region ID for cluster (e.g. 'us-west-2').
+	//       --availability string     Availability of the cluster. Allowed Values: single-zone, multi-zone. (default "single-zone")
+	//       --type string             Type of the Kafka cluster. Allowed values: basic, standard, dedicated. (default "basic")
+	//       --cku int                 Number of Confluent Kafka Units (non-negative). Required for Kafka clusters of type 'dedicated'.
+	//       --encryption-key string   Encryption Key ID (e.g. for Amazon Web Services, the Amazon Resource Name of the key).
+	//   -o, --output string           Specify the output format as "human", "json", or "yaml". (default "human")
+	//       --environment string      Environment ID.
+	//       --context string          CLI Context name.
+
+	// Name            string                        `json:"name"`
+	// AccountID       string                        `json:"accountId"`
+	// Storage         int                           `json:"storage"`
+	// NetworkIngress  int                           `json:"network_ingress"`
+	// NetworkEgress   int                           `json:"network_egress"`
+	// Region          string                        `json:"region"`
+	// ServiceProvider string                        `json:"serviceProvider"`
+	// Availability    string                        `json:"availability"`
+	// Deployment      ClusterCreateDeploymentConfig `json:"deployment"`
+	// Cku             int                           `json:"cku"`
+	cmd := exec.Command("ccloud", "kafka", "cluster", "create", request.Name, "--output", "json")
+	cmd.Stdin = strings.NewReader("some input")
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err := cmd.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("in all caps: %q\n", out.String())
+
+	return nil, nil
 }
 
 func (c *Client) DeleteCluster(id, account_id string) error {
