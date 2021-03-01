@@ -3,3 +3,7 @@
 .idea
 build
 .terraform
+.terraform.lock.hcl
+# .terraformrc
+terraform.tfstate
+terraform-logs.log
