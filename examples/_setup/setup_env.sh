@@ -15,11 +15,18 @@
 # TF_CLI_CONFIG_FILE
 # TF_IGNORE
 
-export TF_LOG=TRACE 
+                                                        # TerraForm Related environment settings
+export TF_LOG=TRACE                                     #    - Setup our log-level to TRACE - gives maximum output
 export TF_LOG_PATH="./tf-logfile.log"
 
-export TMK_TF_PLUGINS_DIR="~/.terraform.d/plugins"
 
-export TRUEMARK_CONFLUENTCLOUD_USERNAME=
-export TRUEMARK_CONFLUENTCLOUD_PASSWORD=
-            
+                                                        # TrueMark.io Env-Vars for debugging/test/etc.
+export TMK_TF_PLUGINS_DIR="~/.terraform.d/plugins"      #    - where to find local plugins, overriding a search on registry.terraform.com. TODO: make this conditional perhaps?
+export TMK_TF_CLI_CMD=""                                #    - allows for adjusting the terraform binary in case running on a custom terraform cli build
+
+
+                                                        # Set Confluent Cloud related Settings here.
+export TRUEMARK_CONFLUENTCLOUD_USERNAME=                #    - confluent.cloud login username
+export TRUEMARK_CONFLUENTCLOUD_PASSWORD=                #    - confluent.cloud login password
+
+     

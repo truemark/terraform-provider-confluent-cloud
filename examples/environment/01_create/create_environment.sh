@@ -1,4 +1,6 @@
 #!/bin/bash
-source ./examples/_setup/setup_env.sh
+source ../../../examples/_setup/setup_env.sh
 
 terraform init -plugin-dir $TMK_TF_PLUGINS_DIR
+terraform plan
+terraform apply

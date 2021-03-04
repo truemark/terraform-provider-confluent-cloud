@@ -36,11 +36,11 @@ func Provider() *schema.Provider {
 		},
 		ConfigureContextFunc: providerConfigure,
 		ResourcesMap: map[string]*schema.Resource{
-			"truemark_confluentcloud_environment":     resourceEnvironment(),
-			"truemark_confluentcloud_kafka_cluster":   resourceKafkaCluster(),
-			"truemark_confluentcloud_api_key":         resourceAPIKey(),
-			"truemark_confluentcloud_schema_registry": resourceSchemaRegistry(),
-			"truemark_confluentcloud_service_account": resourceServiceAccount(),
+			"truemark-confluent-cloud_environment":     resourceEnvironment(),
+			"truemark-confluent-cloud_kafka_cluster":   resourceKafkaCluster(),
+			"truemark-confluent-cloud_api_key":         resourceAPIKey(),
+			"truemark-confluent-cloud_schema_registry": resourceSchemaRegistry(),
+			"truemark-confluent-cloud_service_account": resourceServiceAccount(),
 		},
 	}
 }
@@ -155,7 +155,7 @@ func resourceKafkaCluster() *schema.Resource {
 func resourceAPIKey() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: APIKeyCreate,
-		// ReadContext:   APIKeyRead,
+		ReadContext:   APIKeyRead,
 		// UpdateContext: APIKeyUpdate,
 		DeleteContext: APIKeyDelete,
 		Importer: &schema.ResourceImporter{
@@ -212,6 +212,7 @@ func resourceSchemaRegistry() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: SchemaRegistryCreate,
 		ReadContext:   SchemaRegistryRead,
+		DeleteContext: SchemaRegistryDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -246,7 +247,7 @@ func resourceSchemaRegistry() *schema.Resource {
 func resourceServiceAccount() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: ServiceAccountCreate,
-		// ReadContext:   ServiceAccountRead,
+		ReadContext:   ServiceAccountRead,
 		// UpdateContext: ServiceAccountUpdate,
 		DeleteContext: ServiceAccountDelete,
 		Importer: &schema.ResourceImporter{

@@ -59,3 +59,7 @@ func ServiceAccountDelete(ctx context.Context, d *schema.ResourceData, meta inte
 
 	return nil
 }
+
+func ServiceAccountRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return nil
+}

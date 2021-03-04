@@ -49,3 +49,7 @@ func SchemaRegistryRead(ctx context.Context, d *schema.ResourceData, meta interf
 
 	return diag.FromErr(err)
 }
+
+func SchemaRegistryDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return nil
+}

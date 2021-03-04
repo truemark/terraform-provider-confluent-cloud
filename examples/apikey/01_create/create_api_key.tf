@@ -7,11 +7,19 @@ terraform {
   }
 }
 
-resource "truemark_confluentcloud_api_key" {
+# Fields:
+# 	cluster_id
+# 	logical_clusters 
+# 	user_id
+# 	environment_id
+# 	description
+# 	key
+# 	secret
+resource "truemark_confluentcloud_api_key" "mykey" {
 	cluster_id = ""
+	environment_id = ""
 	logical_clusters = [] 
 	user_id = 124
-	environment_id = ""
 	description = ""
 	key = ""
 	secret = ""

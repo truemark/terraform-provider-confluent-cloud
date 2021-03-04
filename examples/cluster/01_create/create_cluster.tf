@@ -1,20 +1,18 @@
 terraform {
   required_providers {
-    truemark_confluent-cloud = {
+    truemark-confluent-cloud = {
       source = "truemark.io/terraform/truemark-confluent-cloud"
       version = "1.0.0"
     }
   }
 }
 
-truemark.io/terraform/truemark-confluent-cloud/1.0.0/darwin_amd64/terraform-provider-truemark-confluent-cloud 
-
-resource "truemark_confluentcloud_kafka_cluster" "test-terraform" {
+resource "truemark-confluent-cloud_kafka_cluster" "test-terraform" {
   name             = "test-terraform"
   service_provider = "aws"
   region           = "eu-west-1" # ADD A FRIGGEN VALIDATOR HERE
   availability     = "LOW"
-  environment_id   = "env-n5wmz"
+  environment_id   = "env-n5wk6"
   deployment {
     sku = "BASIC"
   }

@@ -104,3 +104,7 @@ func APIKeyDelete(ctx context.Context, d *schema.ResourceData, meta interface{})
 
 	return diag.FromErr(err)
 }
+
+func APIKeyRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return nil
+}

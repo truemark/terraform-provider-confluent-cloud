@@ -1,4 +1,8 @@
-#!/bin/bash
-source ./examples/_setup/setup_env.sh
-
-terraform init -plugin-dir $TMK_TF_PLUGINS_DIR
+terraform {
+  required_providers {
+    truemark_confluent-cloud = {
+      source = "truemark.io/terraform/truemark-confluent-cloud"
+      version = "1.0.0"
+    }
+  }
+}

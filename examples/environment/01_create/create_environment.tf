@@ -7,11 +7,6 @@ terraform {
   }
 }
 
-provider "truemark-confluent-cloud" {
-  username = "briancabbott@gmail.com"
-  password = "Blu3Bl00p8480!"
-}
-
-resource "truemark-confluent-cloud_environment" "my_environment" {
-   name = "my_environment"
+resource "truemark_confluentcloud_environment" "truemark_example_environment" {
+   name = "truemark_example_environment"
 }
