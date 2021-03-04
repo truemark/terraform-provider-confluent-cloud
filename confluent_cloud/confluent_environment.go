@@ -2,7 +2,6 @@ package confluent_cloud
 
 import (
 	"context"
-	"log"
 
 	clientapi "github.com/cgroschupp/go-client-confluent-cloud/confluentcloud"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -16,7 +15,7 @@ func EnvironmentCreate(ctx context.Context, d *schema.ResourceData, meta interfa
 	c := meta.(*clientapi.Client)
 	name := d.Get("name").(string)
 
-	log.Printf("[INFO] Creating Environment %s", name)
+	// TODO: log.Printf("[INFO] Creating Environment %s", name)
 
 	orgID, err := getOrganizationID(c)
 	if err != nil {
@@ -38,7 +37,7 @@ func EnvironmentUpdate(ctx context.Context, d *schema.ResourceData, meta interfa
 	c := meta.(*clientapi.Client)
 	newName := d.Get("name").(string)
 
-	log.Printf("[INFO] Updating Environment %s", d.Id())
+	// TODO: log.Printf("[INFO] Updating Environment %s", d.Id())
 	orgID, err := getOrganizationID(c)
 	if err != nil {
 		return diag.FromErr(err)
@@ -58,7 +57,7 @@ func EnvironmentUpdate(ctx context.Context, d *schema.ResourceData, meta interfa
 func EnvironmentRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(*clientapi.Client)
 
-	log.Printf("[INFO] Reading Environment %s", d.Id())
+	// TODO: log.Printf("[INFO] Reading Environment %s", d.Id())
 	env, err := c.GetEnvironment(d.Id())
 	if err != nil {
 		return diag.FromErr(err)
@@ -75,7 +74,7 @@ func EnvironmentRead(ctx context.Context, d *schema.ResourceData, meta interface
 func EnvironmentDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(*clientapi.Client)
 
-	log.Printf("[INFO] Deleting Environment %s", d.Id())
+	// TODO: log.Printf("[INFO] Deleting Environment %s", d.Id())
 	err := c.DeleteEnvironment(d.Id())
 	if err != nil {
 		return diag.FromErr(err)

@@ -3,7 +3,6 @@ package confluent_cloud
 import (
 	"context"
 	"fmt"
-	"log"
 	"strconv"
 
 	clientapi "github.com/cgroschupp/go-client-confluent-cloud/confluentcloud"
@@ -36,7 +35,7 @@ func ServiceAccountCreate(ctx context.Context, d *schema.ResourceData, meta inte
 			return diag.FromErr(err)
 		}
 	} else {
-		log.Printf("[ERROR] Could not create Service Account: %s", err)
+		// TODO: log.Printf("[ERROR] Could not create Service Account: %s", err)
 	}
 
 	return diag.FromErr(err)
@@ -47,17 +46,17 @@ func ServiceAccountDelete(ctx context.Context, d *schema.ResourceData, meta inte
 
 	ID, err := strconv.Atoi(d.Id())
 	if err != nil {
-		log.Printf("[ERROR] Could not parse Service Account ID %s to int", d.Id())
+		// TODO: log.Printf("[ERROR] Could not parse Service Account ID %s to int", d.Id())
 		return diag.FromErr(err)
 	}
 
 	err = c.DeleteServiceAccount(ID)
 	if err != nil {
-		log.Printf("[ERROR] Service Account can not be deleted: %d", ID)
+		// TODO: log.Printf("[ERROR] Service Account can not be deleted: %d", ID)
 		return diag.FromErr(err)
 	}
 
-	log.Printf("[INFO] Service Account deleted: %d", ID)
+	// TODO: log.Printf("[INFO] Service Account deleted: %d", ID)
 
 	return nil
 }

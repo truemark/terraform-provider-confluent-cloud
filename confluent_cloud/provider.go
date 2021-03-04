@@ -20,7 +20,7 @@ import (
 //    - Kafka Topics
 
 func Provider() *schema.Provider {
-	log.Printf("[INFO] Creating Provider")
+	// TODO: log.Printf("[INFO] Creating Provider")
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"username": {
@@ -270,7 +270,7 @@ func resourceServiceAccount() *schema.Resource {
 }
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	log.Printf("[INFO] Initializing ConfluentCloud client")
+	// TODO: log.Printf("[INFO] Initializing ConfluentCloud client")
 	username := d.Get("username").(string)
 	password := d.Get("password").(string)
 
@@ -283,7 +283,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	err := resource.RetryContext(ctx, 30*time.Minute, func() *resource.RetryError {
 		err := c.Login()
 		if strings.Contains(err.Error(), "Exceeded rate limit") {
-			log.Printf("[INFO] ConfluentCloud API rate limit exceeded, retrying.")
+			// TODO: log.Printf("[INFO] ConfluentCloud API rate limit exceeded, retrying.")
 			return resource.RetryableError(err)
 		}
 		return resource.NonRetryableError(err)

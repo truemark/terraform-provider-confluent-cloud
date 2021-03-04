@@ -40,7 +40,7 @@ func APIKeyCreate(ctx context.Context, d *schema.ResourceData, meta interface{})
 		Description:     description,
 	}
 
-	// log.Printf("[DEBUG] Creating API key")
+	// TODO: log.Printf("[DEBUG] Creating API key")
 	key, err := c.CreateAPIKey(&req)
 	if err == nil {
 		d.SetId(fmt.Sprintf("%d", key.ID))
@@ -55,7 +55,7 @@ func APIKeyCreate(ctx context.Context, d *schema.ResourceData, meta interface{})
 			return diag.FromErr(err)
 		}
 
-		// log.Printf("[INFO] Created API Key, waiting for it become usable")
+		// TODO: log.Printf("[INFO] Created API Key, waiting for it become usable")
 		stateConf := &resource.StateChangeConf{
 			Pending:      []string{"Pending"},
 			Target:       []string{"Ready"},

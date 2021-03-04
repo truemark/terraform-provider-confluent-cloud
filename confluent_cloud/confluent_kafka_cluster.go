@@ -3,7 +3,6 @@ package confluent_cloud
 import (
 	"context"
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
@@ -29,14 +28,14 @@ func ClusterCreate(ctx context.Context, d *schema.ResourceData, meta interface{}
 	networkEgress := d.Get("network_egress").(int)
 	cku := d.Get("cku").(int)
 
-	log.Printf("[DEBUG] Creating kafka_cluster")
+	// TODO: log.Printf("[DEBUG] Creating kafka_cluster")
 
 	dep := clientapi.ClusterCreateDeploymentConfig{
 		AccountID: accountID,
 		Sku:       "BASIC",
 	}
 
-	log.Printf("LETS EXPLORE THE TerraForm schema.Set object ")
+	// TODO: log.Printf("LETS EXPLORE THE TerraForm schema.Set object ")
 	// set_list := deployment.List()
 
 	// if val, ok := deployment["sku"]; ok {
@@ -60,11 +59,11 @@ func ClusterCreate(ctx context.Context, d *schema.ResourceData, meta interface{}
 
 	cluster, err := c.CreateCluster(req)
 	if err != nil {
-		log.Printf("[ERROR] createCluster failed %v, %s", req, err)
+		// TODO: log.Printf("[ERROR] createCluster failed %v, %s", req, err)
 		return diag.FromErr(err)
 	}
 	d.SetId(cluster.ID)
-	log.Printf("[DEBUG] Created kafka_cluster %s, Endpoint: %s", cluster.ID, cluster.Endpoint)
+	// TODO: log.Printf("[DEBUG] Created kafka_cluster %s, Endpoint: %s", cluster.ID, cluster.Endpoint)
 
 	err = d.Set("bootstrap_servers", cluster.Endpoint)
 	if err != nil {
@@ -81,7 +80,7 @@ func ClusterCreate(ctx context.Context, d *schema.ResourceData, meta interface{}
 		Description:     "terraform-provider-confluentcloud cluster connection bootstrap",
 	}
 
-	log.Printf("[DEBUG] Creating bootstrap keypair")
+	// TODO: log.Printf("[DEBUG] Creating bootstrap keypair")
 	key, err := c.CreateAPIKey(&apiKeyReq)
 	if err != nil {
 		return diag.FromErr(err)
@@ -97,16 +96,16 @@ func ClusterCreate(ctx context.Context, d *schema.ResourceData, meta interface{}
 		MinTimeout:   20 * time.Second,
 	}
 
-	log.Printf("[DEBUG] Waiting for cluster to become healthy")
+	// TODO: log.Printf("[DEBUG] Waiting for cluster to become healthy")
 	_, err = stateConf.WaitForStateContext(ctx)
 	if err != nil {
 		return diag.FromErr(fmt.Errorf("Error waiting for cluster (%s) to be ready: %s", d.Id(), err))
 	}
 
-	log.Printf("[DEBUG] Deleting bootstrap keypair")
+	// TODO: log.Printf("[DEBUG] Deleting bootstrap keypair")
 	err = c.DeleteAPIKey(fmt.Sprintf("%d", key.ID), accountID, logicalClusters)
 	if err != nil {
-		log.Printf("[ERROR] Unable to delete bootstrap api key %s", err)
+		// TODO: log.Printf("[ERROR] Unable to delete bootstrap api key %s", err)
 	}
 
 	return nil
@@ -115,14 +114,14 @@ func ClusterCreate(ctx context.Context, d *schema.ResourceData, meta interface{}
 func clusterReady(client *clientapi.Client, clusterID, accountID, username, password string) resource.StateRefreshFunc {
 	return func() (result interface{}, s string, err error) {
 		cluster, err := client.GetCluster(clusterID, accountID)
-		log.Printf("[DEBUG] Waiting for Cluster to be UP: current status %s %s:%s", cluster.Status, username, password)
-		log.Printf("[DEBUG] cluster %v", cluster)
+		// TODO: log.Printf("[DEBUG] Waiting for Cluster to be UP: current status %s %s:%s", cluster.Status, username, password)
+		// TODO: log.Printf("[DEBUG] cluster %v", cluster)
 
 		if err != nil {
 			return cluster, "UNKNOWN", err
 		}
 
-		log.Printf("[DEBUG] Attempting to connect to %s, created %s", cluster.Endpoint, cluster.Deployment.Created)
+		// TODO: log.Printf("[DEBUG] Attempting to connect to %s, created %s", cluster.Endpoint, cluster.Deployment.Created)
 		if cluster.Status == "UP" {
 			if canConnect(cluster.Endpoint, username, password) {
 				return cluster, "Ready", nil
@@ -136,17 +135,17 @@ func clusterReady(client *clientapi.Client, clusterID, accountID, username, pass
 func canConnect(connection, username, password string) bool {
 	client, err := kafkaClient(connection, username, password)
 	if err != nil {
-		log.Printf("[ERROR] Could not build client %s", err)
+		// TODO: log.Printf("[ERROR] Could not build client %s", err)
 		return false
 	}
 
 	err = client.RefreshMetadata()
 	if err != nil {
-		log.Printf("[ERROR] Could not refresh metadata %s", err)
+		// TODO: log.Printf("[ERROR] Could not refresh metadata %s", err)
 		return false
 	}
 
-	log.Printf("[INFO] Success! Connected to %s", connection)
+	// TODO: log.Printf("[INFO] Success! Connected to %s", connection)
 	return true
 }
 
@@ -203,7 +202,7 @@ func clusterRead(ctx context.Context, d *schema.ResourceData, meta interface{}) 
 
 func kafkaClient(connection, username, password string) (sarama.Client, error) {
 	bootstrapServers := strings.Replace(connection, "SASL_SSL://", "", 1)
-	log.Printf("[INFO] Trying to connect to %s", bootstrapServers)
+	// TODO: log.Printf("[INFO] Trying to connect to %s", bootstrapServers)
 
 	cfg := sarama.NewConfig()
 	cfg.Net.SASL.Enable = true

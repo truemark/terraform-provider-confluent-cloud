@@ -2,7 +2,6 @@ package confluent_cloud
 
 import (
 	"context"
-	"log"
 
 	clientapi "github.com/cgroschupp/go-client-confluent-cloud/confluentcloud"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -16,7 +15,7 @@ func SchemaRegistryCreate(ctx context.Context, d *schema.ResourceData, meta inte
 	region := d.Get("region").(string)
 	serviceProvider := d.Get("service_provider").(string)
 
-	log.Printf("[INFO] Creating Schema Registry %s", environment)
+	// TODO: log.Printf("[INFO] Creating Schema Registry %s", environment)
 
 	reg, err := c.CreateSchemaRegistry(environment, region, serviceProvider)
 	if err != nil {
@@ -36,7 +35,7 @@ func SchemaRegistryRead(ctx context.Context, d *schema.ResourceData, meta interf
 	c := meta.(*clientapi.Client)
 
 	environment := d.Get("environment_id").(string)
-	log.Printf("[INFO] Reading Schema Registry %s", environment)
+	// TODO: log.Printf("[INFO] Reading Schema Registry %s", environment)
 
 	env, err := c.GetSchemaRegistry(environment)
 	if err != nil {
