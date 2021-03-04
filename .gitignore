@@ -7,3 +7,4 @@ build
 # .terraformrc
 terraform.tfstate
 terraform-logs.log
+examples/_setup/setup_env.sh
