@@ -43,7 +43,6 @@ func ServiceAccountCreate(ctx context.Context, d *schema.ResourceData, meta inte
 
 func ServiceAccountDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(*clientapi.Client)
-
 	ID, err := strconv.Atoi(d.Id())
 	if err != nil {
 		// TODO: log.Printf("[ERROR] Could not parse Service Account ID %s to int", d.Id())

@@ -2,7 +2,6 @@ package confluent_cloud
 
 import (
 	"context"
-	"log"
 	"strings"
 	"time"
 
@@ -98,11 +97,11 @@ func resourceKafkaCluster() *schema.Resource {
 				Description: "AWS / GCP",
 			},
 			"region": {
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    true,
-				Description: "where",
-				ValidateFunc: ValidateKafkaClusterRegion
+				Type:         schema.TypeString,
+				Required:     true,
+				ForceNew:     true,
+				Description:  "where",
+				ValidateFunc: ValidateKafkaClusterRegion,
 			},
 			"availability": {
 				Type:         schema.TypeString,
@@ -156,7 +155,7 @@ func resourceKafkaCluster() *schema.Resource {
 func resourceAPIKey() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: APIKeyCreate,
-		ReadContext:   APIKeyRead,
+		// ReadContext:   APIKeyRead,
 		// UpdateContext: APIKeyUpdate,
 		DeleteContext: APIKeyDelete,
 		Importer: &schema.ResourceImporter{
@@ -243,11 +242,12 @@ func resourceSchemaRegistry() *schema.Resource {
 	}
 }
 
+// No Read or Update for Service-Account
 func resourceServiceAccount() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: ServiceAccountCreate,
-		ReadContext:   ServiceAccountRead,
-		UpdateContext: ServiceAccountUpdate,
+		// ReadContext:   ServiceAccountRead,
+		// UpdateContext: ServiceAccountUpdate,
 		DeleteContext: ServiceAccountDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,

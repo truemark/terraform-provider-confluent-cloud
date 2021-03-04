@@ -149,7 +149,7 @@ func canConnect(connection, username, password string) bool {
 	return true
 }
 
-func clusterDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func ClusterDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(*clientapi.Client)
 	accountID := d.Get("environment_id").(string)
 	var diags diag.Diagnostics
@@ -160,7 +160,7 @@ func clusterDelete(ctx context.Context, d *schema.ResourceData, meta interface{}
 	return diags
 }
 
-func clusterRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func ClusterRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(*clientapi.Client)
 	accountID := d.Get("environment_id").(string)
 

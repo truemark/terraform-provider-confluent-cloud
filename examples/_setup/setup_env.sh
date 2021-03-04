@@ -18,6 +18,8 @@
 export TF_LOG=TRACE 
 export TF_LOG_PATH="./tf-logfile.log"
 
+export TMK_TF_PLUGINS_DIR="~/.terraform.d/plugins"
+
 export TRUEMARK_CONFLUENTCLOUD_USERNAME=
 export TRUEMARK_CONFLUENTCLOUD_PASSWORD=
             
