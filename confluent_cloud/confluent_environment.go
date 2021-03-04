@@ -4,15 +4,15 @@ import (
 	"context"
 	"log"
 
+	clientapi "github.com/cgroschupp/go-client-confluent-cloud/confluentcloud"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	clientapi "github.com/truemark/terraform-provider-confluent-cloud/confluent_cloud/client"
 )
 
 ////
 // Supports Confluence Cloud Environment Operations.
 //
-func environmentCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func EnvironmentCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(*clientapi.Client)
 	name := d.Get("name").(string)
 
@@ -34,7 +34,7 @@ func environmentCreate(ctx context.Context, d *schema.ResourceData, meta interfa
 ////
 // Updates the name of an existing Confluent.Cloud Environment
 //
-func environmentUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func EnvironmentUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(*clientapi.Client)
 	newName := d.Get("name").(string)
 
@@ -55,7 +55,7 @@ func environmentUpdate(ctx context.Context, d *schema.ResourceData, meta interfa
 
 ///
 // Performs a read operation on the
-func environmentRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func EnvironmentRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(*clientapi.Client)
 
 	log.Printf("[INFO] Reading Environment %s", d.Id())
@@ -72,7 +72,7 @@ func environmentRead(ctx context.Context, d *schema.ResourceData, meta interface
 	return nil
 }
 
-func environmentDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func EnvironmentDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	c := meta.(*clientapi.Client)
 
 	log.Printf("[INFO] Deleting Environment %s", d.Id())

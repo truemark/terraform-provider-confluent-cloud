@@ -1,4 +1,4 @@
-.PHONY: build clean install go-format go-lint go-doc tf-doc
+.PHONY: clean build install go-format go-lint go-doc tf-doc
 
 ###
 ## Provider Variables
@@ -42,26 +42,14 @@ INSTALL_MV_OPTS =
 INSTALL_LOCATION = $(PROVIDER_PLUGINS_DIR)/$(PROVIDER_HOSTNAME)/$(PROVIDER_NAMESPACE)/$(PROVIDER_NAME)/$(PROVIDER_VERSION)/$(PROVIDER_OS_ARCH)
 
 
-build:
-	$(BUILD_MKDIR) ./$(BUILD_OPTS_OUTDIR)
-	$(BUILD_COMPILER) $(BUILD_COMMAND) $(BUILD_OPTS) -o $(BUILD_OUT)
-
-
 clean:
 	$(CLEAN_CMD) $(CLEAN_OPTS) $(BUILD_OPTS_OUTDIR)
 
+build: clean
+	$(BUILD_MKDIR) ./$(BUILD_OPTS_OUTDIR)
+	$(BUILD_COMPILER) $(BUILD_COMMAND) $(BUILD_OPTS) -o $(BUILD_OUT)
 
-install:
-	## We produce this in order to run to run:
-	##    PLUGINS_DIR/HOSTNAME/NAMESPACE/NAME/VERSION/OS_ARCH/PRODUCT_NAME
-	## That will look something like:
-	##    ~/.terraform.d/plugins
-	##    └── truemark.io
-	##        └── terraform
-	##            └── truemark-confluent-cloud
-	##                └── 1.0.0
-	##                    └── darwin_amd64
-	##                        └── terraform-provider-truemark-confluent-cloud
+install: build
 	$(INSTALL_MK_CMD) $(INSTALL_MK_OPTS) $(INSTALL_LOCATION)
 	$(INSTALL_MV_CMD) $(INSTALL_MV_OPTS) $(BUILD_OUT) $(INSTALL_LOCATION)
 
@@ -69,11 +57,8 @@ install:
 go-format:
 	go fmt ./...
 
-
 go-lint:
 
-
 go-doc:
-
 
 tf-doc:

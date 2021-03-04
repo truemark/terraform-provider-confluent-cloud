@@ -2,16 +2,14 @@ package confluent_cloud
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"strings"
 	"time"
 
+	"github.com/cgroschupp/go-client-confluent-cloud/confluentcloud"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
-	"github.com/truemark/terraform-provider-confluent-cloud/confluent_cloud/client"
 )
 
 // A TerraForm Provider that supportsthe following operations:
@@ -28,32 +26,32 @@ func Provider() *schema.Provider {
 			"username": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("CONFLUENT_CLOUD_USERNAME", ""),
+				DefaultFunc: schema.EnvDefaultFunc("TRUEMARK_CONFLUENTCLOUD_USERNAME", ""),
 			},
 			"password": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Sensitive:   true,
-				DefaultFunc: schema.EnvDefaultFunc("CONFLUENT_CLOUD_PASSWORD", ""),
+				DefaultFunc: schema.EnvDefaultFunc("TRUEMARK_CONFLUENTCLOUD_PASSWORD", ""),
 			},
 		},
 		ConfigureContextFunc: providerConfigure,
 		ResourcesMap: map[string]*schema.Resource{
-			"truemark-confluent-cloud_environment":   ResourceEnvironment(),
-			"truemark-confluent-cloud_kafka_cluster": ResourceKafkaCluster(),
-			// "truemark-confluent-cloud_api_key": apiKeyResource(),
-			// 	"truemark-confluent-cloud_schema_registry": schemaRegistryResource(),
-			// 	"truemark-confluent-cloud_service_account": serviceAccountResource(),
+			"truemark_confluentcloud_environment":     resourceEnvironment(),
+			"truemark_confluentcloud_kafka_cluster":   resourceKafkaCluster(),
+			"truemark_confluentcloud_api_key":         resourceAPIKey(),
+			"truemark_confluentcloud_schema_registry": resourceSchemaRegistry(),
+			"truemark_confluentcloud_service_account": resourceServiceAccount(),
 		},
 	}
 }
 
-func ResourceEnvironment() *schema.Resource {
+func resourceEnvironment() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: environmentCreate,
-		ReadContext:   environmentRead,
-		UpdateContext: environmentUpdate,
-		DeleteContext: environmentDelete,
+		CreateContext: EnvironmentCreate,
+		ReadContext:   EnvironmentRead,
+		UpdateContext: EnvironmentUpdate,
+		DeleteContext: EnvironmentDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -68,12 +66,11 @@ func ResourceEnvironment() *schema.Resource {
 	}
 }
 
-func ResourceKafkaCluster() *schema.Resource {
+func resourceKafkaCluster() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: kafkaClusterCreate,
-		ReadContext:   kafkaClusterRead,
-		UpdateContext: kafkaClusterUpdate,
-		DeleteContext: kafkaClusterDelete,
+		CreateContext: ClusterCreate,
+		ReadContext:   ClusterRead,
+		DeleteContext: ClusterDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -81,91 +78,61 @@ func ResourceKafkaCluster() *schema.Resource {
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
-				ForceNew:    false,
-				Description: "what am I?",
+				ForceNew:    true,
+				Description: "The name of the cluster",
 			},
-			"account_id": {
+			"environment_id": {
 				Type:        schema.TypeString,
 				Required:    true,
-				ForceNew:    false,
-				Description: "what am I?",
+				ForceNew:    true,
+				Description: "Environment ID",
 			},
-			"storage": {
-				Type:        schema.TypeInt,
-				Required:    true,
-				ForceNew:    false,
-				Description: "what am I?",
-			},
-			"network_ingress": {
-				Type:        schema.TypeInt,
-				Required:    true,
-				ForceNew:    false,
-				Description: "what am I?",
-			},
-			"network_egress": {
-				Type:        schema.TypeInt,
-				Required:    true,
-				ForceNew:    false,
-				Description: "what am I?",
-			},
-			"region": {
-				Type:        schema.TypeString,
-				Required:    true,
-				ForceNew:    false,
-				Description: "what am I?",
+			"bootstrap_servers": {
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"service_provider": {
 				Type:        schema.TypeString,
 				Required:    true,
-				ForceNew:    false,
-				Description: "what am I?",
+				ForceNew:    true,
+				Description: "AWS / GCP",
 			},
-			"availability": {
+			"region": {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
-				Description: "LOW(single-zone) or HIGH(multi-zone)",
-				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-					v := val.(string)
-					if val != "LOW" && val != "HIGH" {
-						errs = append(errs, fmt.Errorf("%q must be `LOW` or `HIGH`, got: %s", key, v))
-					}
-					return
-				},
+				Description: "where",
+				ValidateFunc: ValidateKafkaClusterRegion
 			},
-			// "deployment": {
-			// 	Type:        schema.TypeList,
-			// 	Required:    true,
-			// 	ForceNew:    false,
-			// 	Description: "what am I?",
-			// 	Elem: &schema.Resource{
-			// 		Schema: map[string]*schema.Schema{
-			// 			"sku": {
-			// 				Type:        schema.TypeString,
-			// 				Required:    true,
-			// 				ForceNew:    false,
-			// 				Description: "",
-			// 			},
-			// 			"account_id": {
-			// 				Type:        schema.TypeString,
-			// 				Required:    true,
-			// 				ForceNew:    false,
-			// 				Description: "",
-			// 			},
-			// 		},
-			// 	},
-			// },
-
-			"cku": {
+			"availability": {
+				Type:         schema.TypeString,
+				Required:     true,
+				ForceNew:     true,
+				Description:  "LOW(single-zone) or HIGH(multi-zone)",
+				ValidateFunc: ValidateAvailability,
+			},
+			"storage": {
 				Type:        schema.TypeInt,
-				Required:    true,
-				ForceNew:    false,
-				Description: "what am I?",
-			},
-
-			"deployment": {
-				Type:        schema.TypeList,
 				Optional:    true,
+				ForceNew:    true,
+				Description: "Storage limit(GB)",
+			},
+			"network_ingress": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Network ingress limit(MBps)",
+			},
+			"network_egress": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Network egress limit(MBps)",
+			},
+			"deployment": {
+				Type:        schema.TypeSet,
+				Optional:    true,
+				ForceNew:    true,
 				Description: "Deployment settings.  Currently only `sku` is supported.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -173,13 +140,130 @@ func ResourceKafkaCluster() *schema.Resource {
 							Type:     schema.TypeString,
 							Required: true,
 						},
-						"account_id": {
-							Type:        schema.TypeString,
-							Required:    true,
-							Description: "what am I?",
-						},
 					},
 				},
+			},
+			"cku": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "cku",
+			},
+		},
+	}
+}
+
+func resourceAPIKey() *schema.Resource {
+	return &schema.Resource{
+		CreateContext: APIKeyCreate,
+		ReadContext:   APIKeyRead,
+		// UpdateContext: APIKeyUpdate,
+		DeleteContext: APIKeyDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
+		Schema: map[string]*schema.Schema{
+			"cluster_id": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "",
+			},
+			"logical_clusters": {
+				Type: schema.TypeList,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Logical Cluster ID List to create API Key",
+			},
+			"user_id": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "User ID",
+			},
+			"environment_id": {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "Environment ID",
+			},
+			"description": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Description",
+			},
+			"key": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"secret": {
+				Type:      schema.TypeString,
+				Computed:  true,
+				Sensitive: true,
+			},
+		},
+	}
+}
+
+func resourceSchemaRegistry() *schema.Resource {
+	return &schema.Resource{
+		CreateContext: SchemaRegistryCreate,
+		ReadContext:   SchemaRegistryRead,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
+		Schema: map[string]*schema.Schema{
+			"environment_id": {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "Environment ID",
+			},
+			"region": {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "where",
+			},
+			"service_provider": {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "Cloud provider",
+			},
+			"endpoint": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+		},
+	}
+}
+
+func resourceServiceAccount() *schema.Resource {
+	return &schema.Resource{
+		CreateContext: ServiceAccountCreate,
+		ReadContext:   ServiceAccountRead,
+		UpdateContext: ServiceAccountUpdate,
+		DeleteContext: ServiceAccountDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
+		Schema: map[string]*schema.Schema{
+			"name": {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "",
+			},
+			"description": {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "Service Account Description",
 			},
 		},
 	}
@@ -187,33 +271,22 @@ func ResourceKafkaCluster() *schema.Resource {
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	log.Printf("[INFO] Initializing ConfluentCloud client")
-
 	username := d.Get("username").(string)
 	password := d.Get("password").(string)
 
-	log.Printf("Username: %s\n", username)
-	log.Printf("Password: %s\n", password)
-
 	var diags diag.Diagnostics
-	c := client.NewClient(username, password)
+	c := confluentcloud.NewClient(username, password)
 	loginErr := c.Login()
 	if loginErr == nil {
-		log.Printf("[INFO] Login to Confluent.Cloud Succeeded\n")
 		return c, diags
 	}
-
-	log.Printf("[INFO] Loging Error Occurred: %s\n", loginErr.Error())
 	err := resource.RetryContext(ctx, 30*time.Minute, func() *resource.RetryError {
 		err := c.Login()
 		if strings.Contains(err.Error(), "Exceeded rate limit") {
 			log.Printf("[INFO] ConfluentCloud API rate limit exceeded, retrying.")
 			return resource.RetryableError(err)
-		} else {
-			log.Printf("[INFO] rate limit is still okay...\n")
 		}
-
 		return resource.NonRetryableError(err)
 	})
-
 	return c, diag.FromErr(err)
 }
