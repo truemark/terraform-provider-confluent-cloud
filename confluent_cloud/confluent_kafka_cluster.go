@@ -29,10 +29,11 @@ func ClusterCreate(ctx context.Context, d *schema.ResourceData, meta interface{}
 	networkEgress := d.Get("network_egress").(int)
 	cku := d.Get("cku").(int)
 
-	// TODO: log.Printf("[DEBUG] Creating kafka_cluster")
+	// TODO: log.Printf("[DEBUG] Creating kafka_c luster")
 
 	dep := clientapi.ClusterCreateDeploymentConfig{
 		AccountID: accountID,
+		// TODO: 
 		Sku:       "BASIC",
 	}
 

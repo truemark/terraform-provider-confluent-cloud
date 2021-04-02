@@ -17,10 +17,11 @@ terraform {
 # 	secret
 resource "truemark_confluentcloud_api_key" "mykey" {
 	cluster_id = ""
-	environment_id = ""
-	logical_clusters = [] 
-	user_id = 124
-	description = ""
-	key = ""
-	secret = ""
+	environment_id   = "env-n5wk6"
+
+	# logical_clusters = [] 
+	# user_id = 124
+	# description = ""
+	# key = ""
+	# secret = ""
 }

@@ -1,3 +1,5 @@
 #!/bin/bash
 
-source 
+source ./examples/_setup/setup_env.sh
+
+terraform init -plugin-dir $TMK_TF_PLUGINS_DIR

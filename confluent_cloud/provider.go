@@ -12,12 +12,11 @@ import (
 )
 
 // A TerraForm Provider that supportsthe following operations:
-//
 //    - Environment
 //    - Kafka Clusters
 //    - Kafka ACLs
 //    - Kafka Topics
-
+//
 func Provider() *schema.Provider {
 	// TODO: log.Printf("[INFO] Creating Provider")
 	return &schema.Provider{

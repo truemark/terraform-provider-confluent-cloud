@@ -7,8 +7,8 @@ terraform {
   }
 }
 
-resource "truemark_confluentcloud_schema_registry" "" {
-    environment_id = ""
+resource "truemark_confluentcloud_schema_registry" "test_schema_registry" {
+    environment_id = "env-n5wk6"
     region = "eu-west-1"
     service_provider = "aws"
     endpoint = ""

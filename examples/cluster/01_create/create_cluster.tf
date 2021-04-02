@@ -7,8 +7,8 @@ terraform {
   }
 }
 
-resource "truemark-confluent-cloud_kafka_cluster" "test-terraform" {
-  name             = "test-terraform"
+resource "truemark-confluent-cloud_kafka_cluster" "test-terraform2" {
+  name             = "test-terraform2"
   service_provider = "aws"
   region           = "eu-west-1" # ADD A FRIGGEN VALIDATOR HERE
   availability     = "LOW"
